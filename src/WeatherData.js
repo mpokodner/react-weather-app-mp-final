@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import WeatherInfo from "./WeatherInfo";
 
@@ -20,23 +20,22 @@ export default function WeatherData(props) {
     });
   }
 
-  function search() {
+  function handleError(error) {
+    console.error("Error fetching weather data:", error);
+    setWeatherData({ ready: false });
+    alert("Could not find weather data for that city. Please try again.");
+    // You might want to display an error message to the user here
+  }
+  const search = useCallback(() => {
     const apiKey = "6782253072f7d90462731a624097fc54";
     const units = "metric";
     const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${units}`;
     axios.get(apiUrl).then(handleResponse).catch(handleError); // Added error handling
-  }
-
-  function handleError(error) {
-    console.error("Error fetching weather data:", error);
-    // You might want to display an error message to the user here
-    setWeatherData({ ready: false }); // Reset ready state on error
-    alert("Could not find weather data for that city. Please try again.");
-  }
+  }, [city]); // <-- Properly close useCallback and add dependency
 
   function handleSubmit(event) {
     event.preventDefault();
-    search(); // Call search when form is submitted
+    search();
   }
 
   function handleCityChange(event) {
@@ -52,7 +51,7 @@ export default function WeatherData(props) {
       // Initial load for default city if no prop
       search();
     }
-  }, [props.defaultCity, city]); // Dependency array: re-run effect if defaultCity or city changes
+  }, [props.defaultCity, city, search, weatherData.ready]);
 
   if (weatherData.ready) {
     return (
@@ -66,7 +65,7 @@ export default function WeatherData(props) {
                 className="form-control"
                 autoFocus="on"
                 onChange={handleCityChange}
-                value={city} // Controlled component: input value tied to state
+                value={city}
               />
             </div>
             <div className="col-3">
@@ -78,12 +77,10 @@ export default function WeatherData(props) {
             </div>
           </div>
         </form>
-        {/* Pass weatherData as a prop to WeatherInfo */}
         <WeatherInfo data={weatherData} />
       </div>
     );
   } else {
-    // We initiate the search via useEffect, so just show loading here
     return "Loading...";
   }
 }
