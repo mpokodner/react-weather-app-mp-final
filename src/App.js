@@ -7,9 +7,27 @@ function App() {
   return (
     <div className="App">
       <h1>Weather City Search</h1>
-      <div className="App">
+      <div className="WeatherDataSearch">
         <WeatherData />
       </div>
+      <footer>
+        This project was coded by{" "}
+        <a
+          href="https://github.com/mpokodner"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Michelle Pokodner
+        </a>{" "}
+        and is{" "}
+        <a
+          href="https://weatherappreact-mp.netlify.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          hosted on Netlify
+        </a>
+      </footer>
     </div>
   );
 }
