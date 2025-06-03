@@ -6,9 +6,8 @@ function App() {
   debugger;
   return (
     <div className="App">
-      <h1>Weather City Search</h1>
-      <div className="Search">
-        <WeatherData />
+      <div className="container">
+        <WeatherData defaultCity="New York" />
       </div>
       <footer>
         This project was coded by{" "}
