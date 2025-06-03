@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./Weather.css";
 import WeatherInfo from "./WeatherInfo";
 
-// component to display weather info
 export default function WeatherData(props) {
   const [weatherData, setWeatherData] = useState({ ready: false });
-  const [city, setCity] = useState(props.defaultCity);
+  const [city, setCity] = useState(props.defaultCity || "New York"); // Added a fallback default city
 
   function handleResponse(response) {
     setWeatherData({
@@ -22,22 +20,39 @@ export default function WeatherData(props) {
     });
   }
 
+  function search() {
+    const apiKey = "6782253072f7d90462731a624097fc54";
+    const units = "metric";
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${units}`;
+    axios.get(apiUrl).then(handleResponse).catch(handleError); // Added error handling
+  }
+
+  function handleError(error) {
+    console.error("Error fetching weather data:", error);
+    // You might want to display an error message to the user here
+    setWeatherData({ ready: false }); // Reset ready state on error
+    alert("Could not find weather data for that city. Please try again.");
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
-    search();
+    search(); // Call search when form is submitted
   }
 
   function handleCityChange(event) {
     setCity(event.target.value);
   }
 
-  let query = city;
-  let units = "metric";
-  function search(event) {
-    const apiKey = "6782253072f7d90462731a624097fc54";
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${apiKey}&units=${units}`;
-    axios.get(apiUrl).then(handleResponse);
-  }
+  // useEffect to call search on component mount and when the defaultCity prop changes
+  useEffect(() => {
+    if (props.defaultCity) {
+      setCity(props.defaultCity);
+      search();
+    } else if (!weatherData.ready && city) {
+      // Initial load for default city if no prop
+      search();
+    }
+  }, [props.defaultCity, city]); // Dependency array: re-run effect if defaultCity or city changes
 
   if (weatherData.ready) {
     return (
@@ -51,6 +66,7 @@ export default function WeatherData(props) {
                 className="form-control"
                 autoFocus="on"
                 onChange={handleCityChange}
+                value={city} // Controlled component: input value tied to state
               />
             </div>
             <div className="col-3">
@@ -62,11 +78,12 @@ export default function WeatherData(props) {
             </div>
           </div>
         </form>
-        <WeatherInfo />
+        {/* Pass weatherData as a prop to WeatherInfo */}
+        <WeatherInfo data={weatherData} />
       </div>
     );
   } else {
-    search();
+    // We initiate the search via useEffect, so just show loading here
     return "Loading...";
   }
 }
