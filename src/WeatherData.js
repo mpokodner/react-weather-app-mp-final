@@ -31,8 +31,8 @@ export default function WeatherData(props) {
     setCity(event.target.value);
   }
 
-  const apiKey = "6782253072f7d90462731a624097fc54"; // It's better to keep API keys in environment variables
-
+  let query = city;
+  let units = "metric";
   function search(event) {
     const apiKey = "6782253072f7d90462731a624097fc54";
     const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${apiKey}&units=${units}`;
@@ -62,8 +62,7 @@ export default function WeatherData(props) {
             </div>
           </div>
         </form>
-        <WeatherInfo data={weatherData} />
-        <WeatherForecast coordinates={weatherData.coordinates} />
+        <WeatherInfo />
       </div>
     );
   } else {
