@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Add useEffect here
 import WeatherInfo from "./WeatherInfo";
-import WeatherForecast from "./WeatherForecast";
+import WeatherForecast from "./WeatherForecast"; // This import is now correct
 import axios from "axios";
 import "./Weather.css";
 
@@ -82,65 +82,4 @@ function WeatherData(props) {
   }
 }
 
-// WeatherForecast.js
-function WeatherForecast(props) {
-  const [loaded, setLoaded] = useState(false);
-  const [forecast, setForecast] = useState(null);
-
-  // Function to load the forecast data
-  function loadForecast() {
-    const apiKey = "6f578b96aa9505bcce148ac22cb85794"; // Your API key for onecall
-    let longitude = props.coordinates.lon;
-    let latitude = props.coordinates.lat;
-    let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=current,minutely,hourly,alerts&appid=${apiKey}&units=metric`;
-
-    axios
-      .get(apiUrl)
-      .then(handleResponse)
-      .catch((error) => {
-        console.error("Error fetching forecast:", error);
-        setLoaded(false); // Reset loaded state on error
-      });
-  }
-
-  function handleResponse(response) {
-    setForecast(response.data.daily);
-    setLoaded(true);
-  }
-
-  // Use useEffect to fetch forecast when coordinates change
-  useEffect(() => {
-    // Reset loaded state and forecast data when coordinates change
-    setLoaded(false);
-    setForecast(null);
-    if (props.coordinates) {
-      loadForecast();
-    }
-  }, [props.coordinates]); // Re-run when coordinates prop changes
-
-  if (loaded) {
-    return (
-      <div className="WeatherForecast mt-6 border-t pt-4">
-        <h2 className="text-xl font-semibold mb-4">5-Day Forecast</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-          {forecast.slice(0, 5).map(function (dailyForecast, index) {
-            return (
-              <div key={index} className="col-span-1">
-                <WeatherForecastDay data={dailyForecast} />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  } else {
-    // Show loading message or null if coordinates are not yet available
-    return props.coordinates ? (
-      <div className="text-center text-gray-600 text-lg py-4">
-        Loading forecast...
-      </div>
-    ) : null;
-  }
-}
-
-export { WeatherData, WeatherInfo, WeatherForecast };
+export default WeatherData;

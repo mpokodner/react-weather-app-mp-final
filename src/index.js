@@ -1,14 +1,13 @@
+// src/index.js (or App.js, wherever WeatherData is rendered)
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import "bootstrap/dist/css/bootstrap.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
+import WeatherData from "./WeatherData"; // Changed to default import
+import "./index.css"; // Or your main CSS
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <WeatherData defaultCity="New York" />
   </React.StrictMode>
 );
 
