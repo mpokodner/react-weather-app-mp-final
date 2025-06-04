@@ -1,7 +1,8 @@
 // src/index.js (or App.js, wherever WeatherData is rendered)
 import React from "react";
 import ReactDOM from "react-dom/client";
-import WeatherData from "./WeatherData"; // Changed to default import
+import WeatherData from "./WeatherData";
+import reportWebVitals from "./reportWebVitals"; // Changed to default import
 import "./index.css"; // Or your main CSS
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
