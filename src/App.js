@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ReactAnimatedWeather from "react-animated-weather";
+import WeatherData from "./WeatherData";
 
 // App.js
 function App() {
