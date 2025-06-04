@@ -7,16 +7,42 @@ export default function WeatherForecast(props) {
   let [forecast, setForecast] = useState(null);
 
   function handleResponse(response) {
-    setForecast(response.data.daily);
+    // The 5-day forecast API returns data every 3 hours, so we need to process it
+    // to get daily forecasts. We'll take one forecast per day (around noon when possible)
+    const dailyForecasts = [];
+    const seenDates = new Set();
+
+    response.data.list.forEach((item) => {
+      const date = new Date(item.dt * 1000);
+      const dateString = date.toDateString();
+
+      // Skip today and only add one forecast per day
+      if (!seenDates.has(dateString) && dailyForecasts.length < 5) {
+        // Convert to match the expected format from One Call API
+        const dailyItem = {
+          dt: item.dt,
+          temp: {
+            max: item.main.temp_max,
+            min: item.main.temp_min,
+          },
+          weather: item.weather,
+        };
+        dailyForecasts.push(dailyItem);
+        seenDates.add(dateString);
+      }
+    });
+
+    setForecast(dailyForecasts);
     setLoaded(true);
   }
 
   useEffect(() => {
     function loadForecast() {
-      let apiKey = "6782253072f7d90462731a624097fc54"; // Use the same API key
+      let apiKey = "6782253072f7d90462731a624097fc54";
       let longitude = props.coordinates.lon;
       let latitude = props.coordinates.lat;
-      let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+      // Using the 5-day forecast API instead of deprecated One Call API
+      let apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
 
       setLoaded(false);
       axios.get(apiUrl).then(handleResponse);
@@ -34,7 +60,7 @@ export default function WeatherForecast(props) {
           </div>
           <div className="card-body">
             <div className="row g-2">
-              {forecast.slice(1, 6).map(function (dailyForecast, index) {
+              {forecast.map(function (dailyForecast, index) {
                 return (
                   <div className="col" key={index}>
                     <WeatherForecastDay data={dailyForecast} />
