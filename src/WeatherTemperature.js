@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
-export default function WeatherTemperature(props) {
+function WeatherTemperature(props) {
   const [unit, setUnit] = useState("celsius");
+
   function showFahrenheit(event) {
     event.preventDefault();
     setUnit("fahrenheit");
@@ -13,34 +14,39 @@ export default function WeatherTemperature(props) {
     event.preventDefault();
     setUnit("celsius");
   }
-  if (unit === "celsius") {
-    return (
-      <div className="WeatherTemperature">
-        <span className="temperature">{Math.round(props.celsius)}</span>
-        <span className="unit">
-          <a href="/" onClick={showCelsius}>
-            {" "}
-            °C
-          </a>{" "}
-          |{" "}
-          <a href="/" onClick={showFahrenheit}>
-            °F
-          </a>{" "}
-        </span>
-      </div>
-    );
-  } else {
-    return (
-      <div className="WeatherTemperature">
-        <span className="temperature">{Math.round(fahrenheit())}</span>
-        <span className="unit">
-          <a href="/" onClick={showCelsius}>
-            {" "}
-            °C
-          </a>{" "}
-          | °F
-        </span>
-      </div>
-    );
-  }
+
+  return (
+    <div className="WeatherTemperature flex items-start ml-4">
+      <span className="text-6xl font-bold text-gray-900 leading-none">
+        {Math.round(unit === "celsius" ? props.celsius : fahrenheit())}
+      </span>
+      <span className="text-xl relative top-2 ml-1">
+        {unit === "celsius" ? (
+          <>
+            <span className="text-blue-600 font-bold">°C</span>{" "}
+            <a
+              href="/"
+              onClick={showFahrenheit}
+              className="text-gray-500 hover:text-blue-600 transition-colors duration-200"
+            >
+              | °F
+            </a>
+          </>
+        ) : (
+          <>
+            <a
+              href="/"
+              onClick={showCelsius}
+              className="text-gray-500 hover:text-blue-600 transition-colors duration-200"
+            >
+              °C |
+            </a>{" "}
+            <span className="text-blue-600 font-bold">°F</span>
+          </>
+        )}
+      </span>
+    </div>
+  );
 }
+
+export default WeatherTemperature;

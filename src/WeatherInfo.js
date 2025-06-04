@@ -5,35 +5,38 @@ import WeatherTemperature from "./WeatherTemperature";
 
 import "./Weather.css";
 
-export default function WeatherInfo(props) {
+function WeatherInfo(props) {
   return (
-    <div className="WeatherInfo">
-      <h1>{props.data.city}</h1>
-      <ul>
+    <div className="WeatherInfo mb-6">
+      <h1 className="text-4xl font-light text-gray-800 mb-2">
+        {props.data.city}
+      </h1>
+      <ul className="list-none p-0 mb-4 text-gray-600">
         <li>
           <FormattedDate date={props.data.date} />
         </li>
-        <li className="text-capitalize">{props.data.description}</li>
+        <li className="capitalize text-lg">{props.data.description}</li>
       </ul>
-      <div className="row mt-3">
-        <div className="col-6">
-          <div className="d-flex">
-            <div>
-              <WeatherIcon code={props.data.icon} size={52} />
-            </div>
-
-            <div className="float-left">
-              <WeatherTemperature celsius={props.data.temperature} />
-            </div>
-          </div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <WeatherIcon code={props.data.icon} size={64} />
+          <WeatherTemperature celsius={props.data.temperature} />
         </div>
-        <div className="col-6">
-          <ul>
-            <li>Humidity: {props.data.humidity}%</li>
-            <li>Wind: {props.data.wind} km/h</li>
-          </ul>
-        </div>
+        <ul className="list-none p-0 text-gray-600 text-lg">
+          <li>
+            Humidity:{" "}
+            <span className="font-semibold">{props.data.humidity}%</span>
+          </li>
+          <li>
+            Wind:{" "}
+            <span className="font-semibold">
+              {Math.round(props.data.wind)} km/h
+            </span>
+          </li>
+        </ul>
       </div>
     </div>
   );
 }
+
+export default WeatherInfo;
