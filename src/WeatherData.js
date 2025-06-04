@@ -48,6 +48,7 @@ function WeatherData(props) {
   // Use useEffect to call search on initial mount and when defaultCity changes
   useEffect(() => {
     search();
+    // eslint-disable-next-line
   }, [city]); // Dependency on 'city' to re-fetch when city state changes
 
   if (weatherData.ready) {
