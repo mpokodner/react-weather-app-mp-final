@@ -18,8 +18,10 @@ function FormattedDate(props) {
   if (minutes < 10) {
     minutes = `0${minutes}`;
   }
+
   return (
-    <div className="text-gray-600 text-lg">
+    <div className="formatted-date">
+      <i className="fas fa-calendar-alt text-primary me-2"></i>
       {day} {hours}:{minutes}
     </div>
   );

@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react"; // Add useEffect here
+import React, { useState, useEffect } from "react";
 import WeatherInfo from "./WeatherInfo";
-import WeatherForecast from "./WeatherForecast"; // This import is now correct
+import WeatherForecast from "./WeatherForecast";
 import axios from "axios";
-import "./Weather.css";
 
 function WeatherData(props) {
   const [weatherData, setWeatherData] = useState({ ready: false });
@@ -24,60 +23,74 @@ function WeatherData(props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    search();
+    searchWeather();
   }
 
   function handleCityChange(event) {
     setCity(event.target.value);
   }
 
-  function search() {
-    const apiKey = "6782253072f7d90462731a624097fc54"; // Your API key
+  function searchWeather() {
+    const apiKey = "6782253072f7d90462731a624097fc54";
     const units = "metric";
     const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${units}`;
+
+    setWeatherData({ ready: false }); // Show loading state
+
     axios
       .get(apiUrl)
       .then(handleResponse)
       .catch((error) => {
         console.error("Error fetching current weather:", error);
-        // You could add a user-friendly message here, e.g., "City not found"
-        setWeatherData({ ready: false }); // Reset state if city not found
+        alert("City not found. Please try again.");
+        setWeatherData({ ready: false });
       });
   }
 
-  // Use useEffect to call search on initial mount and when defaultCity changes
+  // Only search on initial mount with default city
   useEffect(() => {
-    search();
+    searchWeather();
     // eslint-disable-next-line
-  }, [city]); // Dependency on 'city' to re-fetch when city state changes
+  }, []); // Empty dependency array - only run once on mount
 
   if (weatherData.ready) {
     return (
       <div className="font-sans text-gray-800">
         <form onSubmit={handleSubmit} className="mb-6">
-          <div className="flex space-x-2">
-            <input
-              type="search"
-              placeholder="Enter a city.."
-              className="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              autoFocus="on"
-              onChange={handleCityChange}
-            />
-            <input
-              type="submit"
-              value="Search"
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 cursor-pointer"
-            />
+          <div className="row g-2">
+            <div className="col-9">
+              <input
+                type="search"
+                placeholder="Enter a city.."
+                className="form-control form-control-lg"
+                autoFocus="on"
+                onChange={handleCityChange}
+                value={city}
+              />
+            </div>
+            <div className="col-3">
+              <input
+                type="submit"
+                value="Search"
+                className="btn btn-primary btn-lg w-100"
+              />
+            </div>
           </div>
         </form>
         <WeatherInfo data={weatherData} />
-        <WeatherForecast coordinates={weatherData.coordinates} />
+        <WeatherForecast
+          coordinates={weatherData.coordinates}
+          key={weatherData.city}
+        />
       </div>
     );
   } else {
     return (
       <div className="text-center text-gray-600 text-lg py-8">
-        Loading weather data for {city}...
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <p className="mt-3">Loading weather data for {city}...</p>
       </div>
     );
   }

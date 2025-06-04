@@ -7,44 +7,48 @@ function WeatherTemperature(props) {
     event.preventDefault();
     setUnit("fahrenheit");
   }
+
   function fahrenheit() {
     return (props.celsius * 9) / 5 + 32;
   }
+
   function showCelsius(event) {
     event.preventDefault();
     setUnit("celsius");
   }
 
   return (
-    <div className="WeatherTemperature flex items-start ml-4">
-      <span className="text-6xl font-bold text-gray-900 leading-none">
+    <div className="WeatherTemperature d-flex align-items-start ms-3">
+      <span className="temperature-value display-1 fw-bold text-dark lh-1">
         {Math.round(unit === "celsius" ? props.celsius : fahrenheit())}
       </span>
-      <span className="text-xl relative top-2 ml-1">
+      <div className="temperature-units mt-2 ms-2">
         {unit === "celsius" ? (
-          <>
-            <span className="text-blue-600 font-bold">°C</span>{" "}
+          <div className="fs-4">
+            <span className="text-primary fw-bold">°C</span>
+            <span className="text-muted mx-1">|</span>
             <a
               href="/"
               onClick={showFahrenheit}
-              className="text-gray-500 hover:text-blue-600 transition-colors duration-200"
+              className="text-decoration-none text-muted hover-link"
             >
-              | °F
+              °F
             </a>
-          </>
+          </div>
         ) : (
-          <>
+          <div className="fs-4">
             <a
               href="/"
               onClick={showCelsius}
-              className="text-gray-500 hover:text-blue-600 transition-colors duration-200"
+              className="text-decoration-none text-muted hover-link"
             >
-              °C |
-            </a>{" "}
-            <span className="text-blue-600 font-bold">°F</span>
-          </>
+              °C
+            </a>
+            <span className="text-muted mx-1">|</span>
+            <span className="text-primary fw-bold">°F</span>
+          </div>
         )}
-      </span>
+      </div>
     </div>
   );
 }
